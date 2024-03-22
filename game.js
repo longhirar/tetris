@@ -9,8 +9,19 @@ const pieces = [
 ]
 
 var gamearea = [];
+for (let x = 0; x < 10; x++) {
+   gamearea.push([])
+    
+    for (let y = 0; y < 20; y++) {
+        gamearea[x].push(null);
+        
+    }
+    
+}
+
 
 var piecenum = 0, rotation = 0;
+var lastPieceDown = new Date();
 
 const update = dt => {
     if (keyqueue.length > 0)
@@ -26,7 +37,16 @@ const update = dt => {
         if(key === 39) {
             piecenum = piecenum === 6 ? 0 : piecenum + 1;
         }
+        if(key === 40) {
+            pieceY += 1;
+        }
     }
+
+    if ((new Date() - lastPieceDown) > 1000) {
+        lastPieceDown = new Date();
+        pieceY += 1;
+    } 
+
 
 }
 
@@ -43,10 +63,29 @@ const drawPiece = (ctx, piece, x, y) => {
     }
 }
 
+var pieceX = 0, pieceY = 0;
+
 const draw = (dt,ctx) => {
     
+
+    for (let x = 0; x < 10; x++) {
+        
+        for (let y = 0; y < 20; y++) {
+            const block = gamearea[x][y];
+            
+            if (block === null) {
+                ctx.strokeStyle = 'black';
+                ctx.fillStyle = 'lightgray';
+                ctx.fillRect(100+x*20, 100+y*20, 20, 20);
+            }
+        }
+        
+    }
+
+    
     ctx.fillStyle = pieces[piecenum].color;
-    drawPiece(ctx, pieces[piecenum].blocks[rotation], 100, 100);
+    drawPiece(ctx, pieces[piecenum].blocks[rotation], 100+pieceX*20, 100+pieceY*20);
+
 }
 
 gameloop(); //  start game
