@@ -46,12 +46,12 @@ const gameloop = async () => {
         ctx.font = "24px sans-serif";
         ctx.strokeStyle = 'red';
         ctx.fillStyle = 'red';
-        ctx.fillText("GAME CRASH", 320, 150);
+        ctx.fillText("GAME CRASH", 20, 40);
         ctx.font = "16px sans-serif";
         ctx.strokeStyle = 'black';
         ctx.fillStyle = 'black';
-        ctx.fillText('on game update', 320, 170);
-        ctx.fillText(e, 320, 220);
+        ctx.fillText('on game update', 20, 60);
+        ctx.fillText(e, 20, 100);
 
         
         return; // stop game execution
@@ -65,12 +65,12 @@ const gameloop = async () => {
         ctx.font = "24px sans-serif";
         ctx.strokeStyle = 'red';
         ctx.fillStyle = 'red';
-        ctx.fillText("GAME CRASH", 320, 150);
+        ctx.fillText("GAME CRASH", 20, 40);
         ctx.font = "16px sans-serif";
         ctx.strokeStyle = 'black';
         ctx.fillStyle = 'black';
-        ctx.fillText('on game draw', 320, 170);
-        ctx.fillText(e, 320, 220);
+        ctx.fillText('on game draw', 20, 60);
+        ctx.fillText(e, 20, 100);
         return; // stop game execution
     }
 

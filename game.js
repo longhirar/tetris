@@ -9,33 +9,60 @@ const pieces = [
 ];
 
 var gamearea = [];
-for (let x = 0; x < 10; x++) {
+for (let y = 0; y < 20; y++) {
     gamearea.push([]);
 
-    for (let y = 0; y < 20; y++) {
-        gamearea[x].push(null);
+    for (let x = 0; x < 10; x++) {
+        gamearea[y].push(null);
     }
 }
 
-var piecenum = 0,
-    rotation = 0;
-var lastPieceDown = new Date();
-var gameover = false;
+var piece = 0,
+    rotation = 0,
+    score = 0,
+    lastPieceDown = new Date(),
+    gameover = false,
+    nextpieces = [];
+
+const getNextPiece = (index) => {
+    if(nextpieces[index] !== undefined) {
+        return nextpieces[index]
+    }
+
+    while (nextpieces[index] == undefined) {
+        // piece not generated yet, so generate new bag.
+        let orderedBag = [...pieces]; // copy pieces
+        for (let i = 0; orderedBag.length != 0; i++) {
+            let pick = Math.floor(Math.random() * orderedBag.length);
+            nextpieces.push(orderedBag.splice(pick, 1)[0]);
+        }
+    }
+
+    return nextpieces[index];
+}
+const popNextPiece = () => {
+    if (nextpieces[0] === undefined) {
+        getNextPiece(0);
+    }
+    return nextpieces.splice(0,1)[0]; // same as array.pop, but from index 0
+}
+
+piece = popNextPiece();
 
 const addPieceToGamearea = () => {
     for (let i = 0; i < 16; i++) {
-        if (pieces[piecenum].blocks[rotation] & (0b1000000000000000 >>> i)) {
+        if (piece.blocks[rotation] & (0b1000000000000000 >>> i)) {
             const column = pieceX + (i % 4);
             const line = pieceY + Math.floor(i / 4);
 
             // Add the piece to the game area
-            gamearea[column][line] = pieces[piecenum].color;
+            gamearea[line][column] = piece.color;
         }
     }
 
     pieceX = 3;
     pieceY = 0;
-    piecenum = Math.floor(Math.random() * 7);
+    piece = popNextPiece();
 
     if(checkPieceCollision()) {
         // game over, can't spawn new piece
@@ -45,7 +72,7 @@ const addPieceToGamearea = () => {
 
 const checkPieceCollision = () => {
     for (let i = 0; i < 16; i++) {
-        if (pieces[piecenum].blocks[rotation] & (0b1000000000000000 >>> i)) {
+        if (piece.blocks[rotation] & (0b1000000000000000 >>> i)) {
             const column = pieceX + (i % 4);
             const line = pieceY + Math.floor(i / 4);
 
@@ -56,7 +83,7 @@ const checkPieceCollision = () => {
             }
 
             // Check if the current cell of the new piece overlaps with any occupied cell of the existing pieces
-            if (gamearea[column][line] !== null) {
+            if (gamearea[line][column] !== null) {
                 console.log(`PIECE Collision of block at ${column}x${line} with piece's ${(i%4)}x${Math.floor(i/4)}`)
                 return true; // Collision detected
             }
@@ -109,6 +136,30 @@ const update = (dt) => {
         return;
     }
 
+    let linescleared = 0;
+    for (let y = 0; y < 20; y++) {
+        let linefull = true;
+        for (let x = 0; x < 10; x++) {
+            if (gamearea[y][x] === null) {
+                linefull = false;
+            }
+        }
+        if (linefull) {
+            gamearea.splice(y, 1);
+            gamearea.splice(0, 0, [null,null,null,null,null,null,null,null,null,null])
+            linescleared += 1;
+        }
+    }
+    if (linescleared >= 4) {
+        score += linescleared*300;
+    } else if (linescleared == 3) {
+        score += linescleared*100;
+    } else if (linescleared == 2) {
+        score += linescleared*50;
+    } else {
+        score += linescleared*40;
+    }
+
     if (keyqueue.length > 0) {
         console.log(keyqueue[0], keyqueue.length);
         key = keyqueue[0];
@@ -125,7 +176,11 @@ const update = (dt) => {
                 }
                 break;
             case 38: // arrow up
+                let lastRotation = rotation;
                 rotation = rotation === 3 ? 0 : rotation + 1;
+                if (checkPieceCollision()) {
+                    rotation = lastRotation;
+                }
                 break;
             case 39: // arrow right
                 pieceX = pieceX + 1;
@@ -176,7 +231,7 @@ var pieceX = 0,
 const draw = (dt, ctx) => {
     for (let x = 0; x < 10; x++) {
         for (let y = 0; y < 20; y++) {
-            const block = gamearea[x][y];
+            const block = gamearea[y][x];
 
             if (block === null) {
                 ctx.strokeStyle = "black";
@@ -185,16 +240,33 @@ const draw = (dt, ctx) => {
                 ctx.fillStyle = block;
             }
             ctx.fillRect(100 + x * 20, 100 + y * 20, 20, 20);
+
         }
     }
 
-    ctx.fillStyle = pieces[piecenum].color;
+    ctx.fillStyle = piece.color;
     drawPiece(
         ctx,
-        pieces[piecenum].blocks[rotation],
+        piece.blocks[rotation],
         100 + pieceX * 20,
         100 + pieceY * 20
     );
+
+    for (let i = 0; i < 5; i++) {
+        let nextPiece = getNextPiece(i);
+        ctx.fillStyle = nextPiece.color;
+        drawPiece(
+            ctx,
+            nextPiece.blocks[0],
+            320,
+            100 + 100*i
+        )
+        
+    }
+
+    ctx.font = "16px sans-serif";
+    ctx.fillStyle = 'black';
+    ctx.fillText(`Score: ${score}`, 100, 84);
 
     if(gameover) {
         ctx.font = "24px sans-serif";
