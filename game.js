@@ -257,7 +257,7 @@ const draw = (dt, ctx) => {
             } else {
                 ctx.fillStyle = block;
             }
-            ctx.fillRect(100 + x * 20, 100 + y * 20, 20, 20);
+            ctx.fillRect(centerX-100 + x * 20, centerY-200 + y * 20, 20, 20);
 
         }
     }
@@ -266,8 +266,8 @@ const draw = (dt, ctx) => {
     drawPiece(
         ctx,
         piece.blocks[rotation],
-        100 + pieceX * 20,
-        100 + pieceY * 20
+        centerX-100 + pieceX * 20,
+        centerY-200 + pieceY * 20
     );
 
     for (let i = 0; i < 5; i++) {
@@ -276,8 +276,8 @@ const draw = (dt, ctx) => {
         drawPiece(
             ctx,
             nextPiece.blocks[0],
-            320,
-            100 + 100*i
+            centerX + 120,
+            centerY - 200 + 100*i
         )
         
     }
@@ -287,24 +287,24 @@ const draw = (dt, ctx) => {
         drawPiece(
             ctx,
             storedPiece.blocks[0],
-            10,
-            100
+            centerX - 200,
+            centerY - 200
         )
     }
 
     ctx.font = "16px sans-serif";
     ctx.fillStyle = 'black';
-    ctx.fillText(`Score: ${score}`, 100, 84);
+    ctx.fillText(`Score: ${score}`, centerX-100, centerY-220);
 
     if(gameover) {
         ctx.font = "24px sans-serif";
         ctx.strokeStyle = 'red';
         ctx.fillStyle = 'red';
-        ctx.fillText("GAME OVER", 120, 530);
+        ctx.fillText("GAME OVER", centerX-75, centerY+230);
         ctx.font = "16px sans-serif";
         ctx.strokeStyle = 'black';
         ctx.fillStyle = 'black';
-        ctx.fillText("press esc", 160, 560);
+        ctx.fillText("press esc", centerX-40, centerY+250);
     }
 };
 

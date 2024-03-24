@@ -1,5 +1,7 @@
-var running = true;
-var keyqueue = [];
+var running = true,
+    keyqueue = [],
+    centerX = 0,
+    centerY = 0;
 
 document.body.onkeydown = (ev) => {
     keyqueue.push(ev.keyCode);
@@ -10,19 +12,20 @@ window.onresize = () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     console.log("Window resize:", window.innerWidth, window.innerHeight);
+    centerX = canvas.width/2;
+    centerY = canvas.height/2;
 }
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+window.onresize();
 
 
-var frames = 0;
-var ctx = canvas.getContext("2d");
-var framestart = 0;
-var frameend = 0;
-var frametime = 16.6;
-var dt = 0;
-var fps = 0;
-var framecount = 0;
+var frames = 0,
+    ctx = canvas.getContext("2d"),
+    framestart = 0,
+    frameend = 0,
+    frametime = 16.6,
+    dt = 0,
+    fps = 0,
+    framecount = 0;
 
 const gameloop = async () => {
     framestart = new Date();

@@ -1,20 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Longhi's Tetris</title>
-    <style>
-        #tetris {
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-    </style>
-</head>
-<body>
-    <canvas id="tetris"></canvas>
-    <script src="engine.js"></script>
-    <script src="game.js"></script>
-</body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Longhi's Tetris</title>
+        <style>
+            #tetris {
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+        </style>
+
+        <!-- Google tag (gtag.js) -->
+        <script
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=G-E2BHZF5Y2S"
+        ></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag("js", new Date());
+
+            gtag("config", "G-E2BHZF5Y2S");
+        </script>
+    </head>
+    <body>
+        <canvas id="tetris"></canvas>
+        <script src="engine.js"></script>
+        <script src="game.js"></script>
+    </body>
 </html>
