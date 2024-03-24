@@ -22,7 +22,8 @@ var piece = 0,
     score = 0,
     lastPieceDown = new Date(),
     gameover = false,
-    nextpieces = [];
+    nextpieces = [],
+    storedPiece = null;
 
 const getNextPiece = (index) => {
     if(nextpieces[index] !== undefined) {
@@ -129,6 +130,20 @@ const gameover_update = () => {
     }
 }
 
+const storePiece = () => {
+    
+    if(storedPiece) {
+        let currentPiece = piece;
+        piece = storedPiece;
+        storedPiece = currentPiece;
+    }  else {
+        storedPiece = piece;
+        piece = popNextPiece();
+    }
+    pieceX = 3;
+    pieceY = 0;
+}
+
 const update = (dt) => {
     
     if(gameover){
@@ -191,6 +206,9 @@ const update = (dt) => {
             case 40: // arrow down
                 movePieceDown();
                 break;
+            case 67:
+                storePiece();
+                break;
             case 27: // escape
                 location.reload(); //restart game
                 break;
@@ -225,7 +243,7 @@ const drawPiece = (ctx, piece, x, y) => {
     }
 };
 
-var pieceX = 0,
+var pieceX = 3,
     pieceY = 0;
 
 const draw = (dt, ctx) => {
@@ -262,6 +280,16 @@ const draw = (dt, ctx) => {
             100 + 100*i
         )
         
+    }
+
+    if(storedPiece) {
+        ctx.fillStyle = storedPiece.color;
+        drawPiece(
+            ctx,
+            storedPiece.blocks[0],
+            10,
+            100
+        )
     }
 
     ctx.font = "16px sans-serif";
